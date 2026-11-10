@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794335106927,
+      "tag": "0000_nourishly_core_schema",
+      "breakpoints": true
+    }
+  ]
 }
