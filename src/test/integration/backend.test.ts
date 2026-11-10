@@ -91,9 +91,6 @@ run("backend integration", () => {
 
   it("only the store owner can publicly respond to a review (R5)", async () => {
     const { data: review } = await vendor.from("store_reviews").select("id,owner_response,responded_at").eq("store_id", FARM).limit(1).single();
-    cleanup.push(async () => {
-      // restore via owner RPC is not possible for null; clear through moderator-free path is not allowed, so keep response.
-    });
     const { error: deny } = await student.rpc("respond_to_review", { _review_id: review!.id, _response: "I am not the owner" });
     expect(deny?.message).toMatch(/Only the store owner/);
     const { error } = await vendor.rpc("respond_to_review", { _review_id: review!.id, _response: "Thanks for shopping with us!" });
