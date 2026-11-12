@@ -28,6 +28,8 @@ export interface Product {
   promo_price: number | null;
   promo_label?: string | null;
   promo_ends_at: string | null;
+  origin?: string;
+  producer?: string;
 }
 
 export interface Review {

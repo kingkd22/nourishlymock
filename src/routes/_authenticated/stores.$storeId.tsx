@@ -80,7 +80,7 @@ function StorePage() {
             <div key={p.id} className="flex flex-wrap items-center justify-between gap-3 p-5">
               <div>
                 <p className="font-medium">{p.name} <span className="text-sm text-muted-foreground">/ {p.unit}</span></p>
-                <p className="flex items-center gap-1 text-sm text-muted-foreground"><Sprout className="h-3.5 w-3.5" />{(p as any).origin || "Origin not listed"}{(p as any).producer ? ` · ${(p as any).producer}` : ""}</p>
+                <p className="flex items-center gap-1 text-sm text-muted-foreground"><Sprout className="h-3.5 w-3.5" />{p.origin || "Origin not listed"}{p.producer ? ` · ${p.producer}` : ""}</p>
               </div>
               <div className="text-right">
                 {isPromoActive(p) ? (<><Badge variant="promo">{p.promo_label || "Promo"}</Badge><p className="mt-1 text-lg font-semibold">{formatPrice(effectivePrice(p))} <span className="text-sm font-normal text-muted-foreground line-through">{formatPrice(p.current_price)}</span></p></>) : <p className="text-lg font-semibold">{formatPrice(p.current_price)}</p>}
