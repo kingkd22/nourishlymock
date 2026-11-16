@@ -12,10 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedChefRouteImport } from './routes/_authenticated/chef'
 import { Route as AuthenticatedCompareRouteImport } from './routes/_authenticated/compare'
+import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
 import { Route as AuthenticatedPantryRouteImport } from './routes/_authenticated/pantry'
+import { Route as AuthenticatedPantryManageRouteImport } from './routes/_authenticated/pantry-manage'
 import { Route as AuthenticatedRecipesRouteImport } from './routes/_authenticated/recipes'
 import { Route as AuthenticatedStoresRouteImport } from './routes/_authenticated/stores'
+import { Route as AuthenticatedVendorRouteImport } from './routes/_authenticated/vendor'
 import { Route as AuthenticatedRecipesRecipeIdRouteImport } from './routes/_authenticated/recipes.$recipeId'
 import { Route as AuthenticatedStoresStoreIdRouteImport } from './routes/_authenticated/stores.$storeId'
 
@@ -33,9 +38,24 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedChefRoute = AuthenticatedChefRouteImport.update({
+  id: '/chef',
+  path: '/chef',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCompareRoute = AuthenticatedCompareRouteImport.update({
   id: '/compare',
   path: '/compare',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedModerationRoute = AuthenticatedModerationRouteImport.update({
+  id: '/moderation',
+  path: '/moderation',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPantryRoute = AuthenticatedPantryRouteImport.update({
@@ -43,6 +63,12 @@ const AuthenticatedPantryRoute = AuthenticatedPantryRouteImport.update({
   path: '/pantry',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPantryManageRoute =
+  AuthenticatedPantryManageRouteImport.update({
+    id: '/pantry-manage',
+    path: '/pantry-manage',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedRecipesRoute = AuthenticatedRecipesRouteImport.update({
   id: '/recipes',
   path: '/recipes',
@@ -51,6 +77,11 @@ const AuthenticatedRecipesRoute = AuthenticatedRecipesRouteImport.update({
 const AuthenticatedStoresRoute = AuthenticatedStoresRouteImport.update({
   id: '/stores',
   path: '/stores',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedVendorRoute = AuthenticatedVendorRouteImport.update({
+  id: '/vendor',
+  path: '/vendor',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedRecipesRecipeIdRoute =
@@ -69,20 +100,30 @@ const AuthenticatedStoresStoreIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/chef': typeof AuthenticatedChefRoute
   '/compare': typeof AuthenticatedCompareRoute
+  '/moderation': typeof AuthenticatedModerationRoute
   '/pantry': typeof AuthenticatedPantryRoute
+  '/pantry-manage': typeof AuthenticatedPantryManageRoute
   '/recipes': typeof AuthenticatedRecipesRouteWithChildren
   '/stores': typeof AuthenticatedStoresRouteWithChildren
+  '/vendor': typeof AuthenticatedVendorRoute
   '/recipes/$recipeId': typeof AuthenticatedRecipesRecipeIdRoute
   '/stores/$storeId': typeof AuthenticatedStoresStoreIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/chef': typeof AuthenticatedChefRoute
   '/compare': typeof AuthenticatedCompareRoute
+  '/moderation': typeof AuthenticatedModerationRoute
   '/pantry': typeof AuthenticatedPantryRoute
+  '/pantry-manage': typeof AuthenticatedPantryManageRoute
   '/recipes': typeof AuthenticatedRecipesRouteWithChildren
   '/stores': typeof AuthenticatedStoresRouteWithChildren
+  '/vendor': typeof AuthenticatedVendorRoute
   '/recipes/$recipeId': typeof AuthenticatedRecipesRecipeIdRoute
   '/stores/$storeId': typeof AuthenticatedStoresStoreIdRoute
 }
@@ -91,10 +132,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/chef': typeof AuthenticatedChefRoute
   '/_authenticated/compare': typeof AuthenticatedCompareRoute
+  '/_authenticated/moderation': typeof AuthenticatedModerationRoute
   '/_authenticated/pantry': typeof AuthenticatedPantryRoute
+  '/_authenticated/pantry-manage': typeof AuthenticatedPantryManageRoute
   '/_authenticated/recipes': typeof AuthenticatedRecipesRouteWithChildren
   '/_authenticated/stores': typeof AuthenticatedStoresRouteWithChildren
+  '/_authenticated/vendor': typeof AuthenticatedVendorRoute
   '/_authenticated/recipes/$recipeId': typeof AuthenticatedRecipesRecipeIdRoute
   '/_authenticated/stores/$storeId': typeof AuthenticatedStoresStoreIdRoute
 }
@@ -103,20 +149,30 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/admin'
+    | '/chef'
     | '/compare'
+    | '/moderation'
     | '/pantry'
+    | '/pantry-manage'
     | '/recipes'
     | '/stores'
+    | '/vendor'
     | '/recipes/$recipeId'
     | '/stores/$storeId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/admin'
+    | '/chef'
     | '/compare'
+    | '/moderation'
     | '/pantry'
+    | '/pantry-manage'
     | '/recipes'
     | '/stores'
+    | '/vendor'
     | '/recipes/$recipeId'
     | '/stores/$storeId'
   id:
@@ -124,10 +180,15 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/admin'
+    | '/_authenticated/chef'
     | '/_authenticated/compare'
+    | '/_authenticated/moderation'
     | '/_authenticated/pantry'
+    | '/_authenticated/pantry-manage'
     | '/_authenticated/recipes'
     | '/_authenticated/stores'
+    | '/_authenticated/vendor'
     | '/_authenticated/recipes/$recipeId'
     | '/_authenticated/stores/$storeId'
   fileRoutesById: FileRoutesById
@@ -161,6 +222,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/chef': {
+      id: '/_authenticated/chef'
+      path: '/chef'
+      fullPath: '/chef'
+      preLoaderRoute: typeof AuthenticatedChefRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/compare': {
       id: '/_authenticated/compare'
       path: '/compare'
@@ -168,11 +243,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompareRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/moderation': {
+      id: '/_authenticated/moderation'
+      path: '/moderation'
+      fullPath: '/moderation'
+      preLoaderRoute: typeof AuthenticatedModerationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/pantry': {
       id: '/_authenticated/pantry'
       path: '/pantry'
       fullPath: '/pantry'
       preLoaderRoute: typeof AuthenticatedPantryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/pantry-manage': {
+      id: '/_authenticated/pantry-manage'
+      path: '/pantry-manage'
+      fullPath: '/pantry-manage'
+      preLoaderRoute: typeof AuthenticatedPantryManageRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/recipes': {
@@ -187,6 +276,13 @@ declare module '@tanstack/react-router' {
       path: '/stores'
       fullPath: '/stores'
       preLoaderRoute: typeof AuthenticatedStoresRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/vendor': {
+      id: '/_authenticated/vendor'
+      path: '/vendor'
+      fullPath: '/vendor'
+      preLoaderRoute: typeof AuthenticatedVendorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/recipes/$recipeId': {
@@ -229,17 +325,27 @@ const AuthenticatedStoresRouteWithChildren =
   AuthenticatedStoresRoute._addFileChildren(AuthenticatedStoresRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedChefRoute: typeof AuthenticatedChefRoute
   AuthenticatedCompareRoute: typeof AuthenticatedCompareRoute
+  AuthenticatedModerationRoute: typeof AuthenticatedModerationRoute
   AuthenticatedPantryRoute: typeof AuthenticatedPantryRoute
+  AuthenticatedPantryManageRoute: typeof AuthenticatedPantryManageRoute
   AuthenticatedRecipesRoute: typeof AuthenticatedRecipesRouteWithChildren
   AuthenticatedStoresRoute: typeof AuthenticatedStoresRouteWithChildren
+  AuthenticatedVendorRoute: typeof AuthenticatedVendorRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedChefRoute: AuthenticatedChefRoute,
   AuthenticatedCompareRoute: AuthenticatedCompareRoute,
+  AuthenticatedModerationRoute: AuthenticatedModerationRoute,
   AuthenticatedPantryRoute: AuthenticatedPantryRoute,
+  AuthenticatedPantryManageRoute: AuthenticatedPantryManageRoute,
   AuthenticatedRecipesRoute: AuthenticatedRecipesRouteWithChildren,
   AuthenticatedStoresRoute: AuthenticatedStoresRouteWithChildren,
+  AuthenticatedVendorRoute: AuthenticatedVendorRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
