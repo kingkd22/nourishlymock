@@ -1,14 +1,18 @@
-# Welcome to your Lovable project
+# Nourishlymock
+
+create me this project with the requirements listed in the pdf. I want a clean user friendly and professional design, similar to apple design. Double check your work on the backend with clean business logic, integration and unit testing. Double check your work and test all features end to end. Once you're finish list out everything you accomplished
 
 This project was built with [Lovable](https://lovable.dev).
 
+**Live app**: https://nourishlymock.lovable.app
+
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/939efa01-8873-4ba5-aeab-27708655fd20).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +24,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
