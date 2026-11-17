@@ -28,3 +28,10 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules (Nourish.ly)
+- Business rules (pricing, promos, transit ranking, recipe filters, rating comparison, report analytics) live as pure functions in `src/lib/nourish.ts` with unit tests in `src/lib/nourish.test.ts`; UI only calls them. Why: keeps rules testable and consistent.
+- Data access uses the browser client with RLS; privileged actions (owner review responses, moderation) go through security-definer SQL functions, never direct updates. Why: permissions enforced in the database.
+- Roles live in `user_roles`; signup may only self-select student/vendor/chef/pantry_staff — moderator/admin are granted manually. Why: prevent privilege escalation.
+- `src/test/integration/backend.test.ts` runs against the live backend with the demo accounts and must restore any data it changes.
+- Detail pages use the `stores_.$storeId` / `recipes_.$recipeId` un-nested form because list pages have no Outlet.
