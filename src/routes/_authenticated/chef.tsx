@@ -40,9 +40,9 @@ function ChefStudio() {
 
   async function publish() {
     const parsed = schema.safeParse({ title: f.title, cuisine: f.cuisine, minutes: Number(f.minutes), servings: Number(f.servings), est_cost: Number(f.cost), ingredients: lines(f.ingredients), steps: lines(f.steps) });
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+    if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Invalid input"); return; }
     const { error } = await supabase.from("recipes").insert({ ...parsed.data, description: f.description.slice(0, 500), chef_id: session!.user!.id, chef_name: session!.name, allergen_tags: allergens, dietary_tags: diet, religious_compliance: rel });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Recipe published");
     setF({ title: "", description: "", cuisine: "", minutes: "30", servings: "2", cost: "5", ingredients: "", steps: "" }); setAllergens([]); setDiet([]); setRel([]);
     qc.invalidateQueries({ queryKey: ["recipes"] });

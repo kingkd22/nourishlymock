@@ -21,8 +21,8 @@ import { Route as AuthenticatedPantryManageRouteImport } from './routes/_authent
 import { Route as AuthenticatedRecipesRouteImport } from './routes/_authenticated/recipes'
 import { Route as AuthenticatedStoresRouteImport } from './routes/_authenticated/stores'
 import { Route as AuthenticatedVendorRouteImport } from './routes/_authenticated/vendor'
-import { Route as AuthenticatedRecipesRecipeIdRouteImport } from './routes/_authenticated/recipes.$recipeId'
-import { Route as AuthenticatedStoresStoreIdRouteImport } from './routes/_authenticated/stores.$storeId'
+import { Route as AuthenticatedRecipesRecipeIdRouteImport } from './routes/_authenticated/recipes_.$recipeId'
+import { Route as AuthenticatedStoresStoreIdRouteImport } from './routes/_authenticated/stores_.$storeId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -86,15 +86,15 @@ const AuthenticatedVendorRoute = AuthenticatedVendorRouteImport.update({
 } as any)
 const AuthenticatedRecipesRecipeIdRoute =
   AuthenticatedRecipesRecipeIdRouteImport.update({
-    id: '/$recipeId',
-    path: '/$recipeId',
-    getParentRoute: () => AuthenticatedRecipesRoute,
+    id: '/recipes_/$recipeId',
+    path: '/recipes/$recipeId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedStoresStoreIdRoute =
   AuthenticatedStoresStoreIdRouteImport.update({
-    id: '/$storeId',
-    path: '/$storeId',
-    getParentRoute: () => AuthenticatedStoresRoute,
+    id: '/stores_/$storeId',
+    path: '/stores/$storeId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -106,8 +106,8 @@ export interface FileRoutesByFullPath {
   '/moderation': typeof AuthenticatedModerationRoute
   '/pantry': typeof AuthenticatedPantryRoute
   '/pantry-manage': typeof AuthenticatedPantryManageRoute
-  '/recipes': typeof AuthenticatedRecipesRouteWithChildren
-  '/stores': typeof AuthenticatedStoresRouteWithChildren
+  '/recipes': typeof AuthenticatedRecipesRoute
+  '/stores': typeof AuthenticatedStoresRoute
   '/vendor': typeof AuthenticatedVendorRoute
   '/recipes/$recipeId': typeof AuthenticatedRecipesRecipeIdRoute
   '/stores/$storeId': typeof AuthenticatedStoresStoreIdRoute
@@ -121,8 +121,8 @@ export interface FileRoutesByTo {
   '/moderation': typeof AuthenticatedModerationRoute
   '/pantry': typeof AuthenticatedPantryRoute
   '/pantry-manage': typeof AuthenticatedPantryManageRoute
-  '/recipes': typeof AuthenticatedRecipesRouteWithChildren
-  '/stores': typeof AuthenticatedStoresRouteWithChildren
+  '/recipes': typeof AuthenticatedRecipesRoute
+  '/stores': typeof AuthenticatedStoresRoute
   '/vendor': typeof AuthenticatedVendorRoute
   '/recipes/$recipeId': typeof AuthenticatedRecipesRecipeIdRoute
   '/stores/$storeId': typeof AuthenticatedStoresStoreIdRoute
@@ -138,11 +138,11 @@ export interface FileRoutesById {
   '/_authenticated/moderation': typeof AuthenticatedModerationRoute
   '/_authenticated/pantry': typeof AuthenticatedPantryRoute
   '/_authenticated/pantry-manage': typeof AuthenticatedPantryManageRoute
-  '/_authenticated/recipes': typeof AuthenticatedRecipesRouteWithChildren
-  '/_authenticated/stores': typeof AuthenticatedStoresRouteWithChildren
+  '/_authenticated/recipes': typeof AuthenticatedRecipesRoute
+  '/_authenticated/stores': typeof AuthenticatedStoresRoute
   '/_authenticated/vendor': typeof AuthenticatedVendorRoute
-  '/_authenticated/recipes/$recipeId': typeof AuthenticatedRecipesRecipeIdRoute
-  '/_authenticated/stores/$storeId': typeof AuthenticatedStoresStoreIdRoute
+  '/_authenticated/recipes_/$recipeId': typeof AuthenticatedRecipesRecipeIdRoute
+  '/_authenticated/stores_/$storeId': typeof AuthenticatedStoresStoreIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -189,8 +189,8 @@ export interface FileRouteTypes {
     | '/_authenticated/recipes'
     | '/_authenticated/stores'
     | '/_authenticated/vendor'
-    | '/_authenticated/recipes/$recipeId'
-    | '/_authenticated/stores/$storeId'
+    | '/_authenticated/recipes_/$recipeId'
+    | '/_authenticated/stores_/$storeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -285,44 +285,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedVendorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/recipes/$recipeId': {
-      id: '/_authenticated/recipes/$recipeId'
-      path: '/$recipeId'
+    '/_authenticated/recipes_/$recipeId': {
+      id: '/_authenticated/recipes_/$recipeId'
+      path: '/recipes/$recipeId'
       fullPath: '/recipes/$recipeId'
       preLoaderRoute: typeof AuthenticatedRecipesRecipeIdRouteImport
-      parentRoute: typeof AuthenticatedRecipesRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/stores/$storeId': {
-      id: '/_authenticated/stores/$storeId'
-      path: '/$storeId'
+    '/_authenticated/stores_/$storeId': {
+      id: '/_authenticated/stores_/$storeId'
+      path: '/stores/$storeId'
       fullPath: '/stores/$storeId'
       preLoaderRoute: typeof AuthenticatedStoresStoreIdRouteImport
-      parentRoute: typeof AuthenticatedStoresRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
-
-interface AuthenticatedRecipesRouteChildren {
-  AuthenticatedRecipesRecipeIdRoute: typeof AuthenticatedRecipesRecipeIdRoute
-}
-
-const AuthenticatedRecipesRouteChildren: AuthenticatedRecipesRouteChildren = {
-  AuthenticatedRecipesRecipeIdRoute: AuthenticatedRecipesRecipeIdRoute,
-}
-
-const AuthenticatedRecipesRouteWithChildren =
-  AuthenticatedRecipesRoute._addFileChildren(AuthenticatedRecipesRouteChildren)
-
-interface AuthenticatedStoresRouteChildren {
-  AuthenticatedStoresStoreIdRoute: typeof AuthenticatedStoresStoreIdRoute
-}
-
-const AuthenticatedStoresRouteChildren: AuthenticatedStoresRouteChildren = {
-  AuthenticatedStoresStoreIdRoute: AuthenticatedStoresStoreIdRoute,
-}
-
-const AuthenticatedStoresRouteWithChildren =
-  AuthenticatedStoresRoute._addFileChildren(AuthenticatedStoresRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
@@ -331,9 +309,11 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedModerationRoute: typeof AuthenticatedModerationRoute
   AuthenticatedPantryRoute: typeof AuthenticatedPantryRoute
   AuthenticatedPantryManageRoute: typeof AuthenticatedPantryManageRoute
-  AuthenticatedRecipesRoute: typeof AuthenticatedRecipesRouteWithChildren
-  AuthenticatedStoresRoute: typeof AuthenticatedStoresRouteWithChildren
+  AuthenticatedRecipesRoute: typeof AuthenticatedRecipesRoute
+  AuthenticatedStoresRoute: typeof AuthenticatedStoresRoute
   AuthenticatedVendorRoute: typeof AuthenticatedVendorRoute
+  AuthenticatedRecipesRecipeIdRoute: typeof AuthenticatedRecipesRecipeIdRoute
+  AuthenticatedStoresStoreIdRoute: typeof AuthenticatedStoresStoreIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -343,9 +323,11 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedModerationRoute: AuthenticatedModerationRoute,
   AuthenticatedPantryRoute: AuthenticatedPantryRoute,
   AuthenticatedPantryManageRoute: AuthenticatedPantryManageRoute,
-  AuthenticatedRecipesRoute: AuthenticatedRecipesRouteWithChildren,
-  AuthenticatedStoresRoute: AuthenticatedStoresRouteWithChildren,
+  AuthenticatedRecipesRoute: AuthenticatedRecipesRoute,
+  AuthenticatedStoresRoute: AuthenticatedStoresRoute,
   AuthenticatedVendorRoute: AuthenticatedVendorRoute,
+  AuthenticatedRecipesRecipeIdRoute: AuthenticatedRecipesRecipeIdRoute,
+  AuthenticatedStoresStoreIdRoute: AuthenticatedStoresStoreIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

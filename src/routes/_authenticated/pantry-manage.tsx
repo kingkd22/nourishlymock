@@ -28,17 +28,17 @@ function Manage() {
 
   async function saveInfo() {
     const { error } = await supabase.from("pantries").update({ ...info, updated_at: new Date().toISOString() }).eq("id", pantry!.id);
-    if (error) return toast.error(error.message); toast.success("Hours & location published"); refresh();
+    if (error) { toast.error(error.message); return; } toast.success("Hours & location published"); refresh();
   }
   async function addPost() {
-    if (post.title.trim().length < 2) return toast.error("Add a title.");
+    if (post.title.trim().length < 2) { toast.error("Add a title."); return; }
     const { error } = await supabase.from("pantry_posts").insert({ pantry_id: pantry!.id, title: post.title.trim(), body: post.body.trim(), items: post.items.split(",").map((s) => s.trim()).filter(Boolean) });
-    if (error) return toast.error(error.message); toast.success("Announcement posted"); setPost({ title: "", body: "", items: "" }); refresh();
+    if (error) { toast.error(error.message); return; } toast.success("Announcement posted"); setPost({ title: "", body: "", items: "" }); refresh();
   }
   async function addEvent() {
-    if (ev.title.trim().length < 2 || !ev.start) return toast.error("Add a title and start time.");
+    if (ev.title.trim().length < 2 || !ev.start) { toast.error("Add a title and start time."); return; }
     const { error } = await supabase.from("pantry_events").insert({ pantry_id: pantry!.id, title: ev.title.trim(), details: ev.details, location: ev.location, starts_at: new Date(ev.start).toISOString(), ends_at: ev.end ? new Date(ev.end).toISOString() : null });
-    if (error) return toast.error(error.message); toast.success("Event published"); setEv({ title: "", details: "", location: "", start: "", end: "" }); refresh();
+    if (error) { toast.error(error.message); return; } toast.success("Event published"); setEv({ title: "", details: "", location: "", start: "", end: "" }); refresh();
   }
   async function del(table: "pantry_posts" | "pantry_events", id: string) { await supabase.from(table).delete().eq("id", id); refresh(); }
 

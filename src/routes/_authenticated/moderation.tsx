@@ -38,7 +38,7 @@ function Queue() {
 
   async function act(id: string, action: "hide" | "remove" | "dismiss") {
     const { error } = await supabase.rpc("moderate_report", { _report_id: id, _action: action });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(action === "dismiss" ? "Report dismissed" : `Content ${action === "hide" ? "hidden" : "removed"}`);
     qc.invalidateQueries();
   }
@@ -46,7 +46,7 @@ function Queue() {
   return (
     <>
       <PageHeader eyebrow="Moderation" title="Review queue" subtitle="Flagged store ratings and recipe feedback from the community." />
-      <div className="mb-6 flex gap-2">{["open", "actioned", "dismissed"].map((s) => <Chip key={s} active={status === s} onClick={() => setStatus(s)}>{s[0].toUpperCase() + s.slice(1)} ({(reports.data ?? []).filter((r) => r.status === s).length})</Chip>)}</div>
+      <div className="mb-6 flex gap-2">{["open", "actioned", "dismissed"].map((s) => <Chip key={s} active={status === s} onClick={() => setStatus(s)}>{s.charAt(0).toUpperCase() + s.slice(1)} ({(reports.data ?? []).filter((r) => r.status === s).length})</Chip>)}</div>
       {list.length === 0 && <EmptyState title="Nothing here" body="The queue is clear." />}
       <div className="space-y-3">
         {list.map((r) => {

@@ -11,7 +11,7 @@ import { Chip } from "@/components/common";
 import { ROLE_LABELS } from "@/lib/labels";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>) => ({ redirect: typeof s.redirect === "string" ? s.redirect : undefined }),
+  validateSearch: (s: Record<string, unknown>) => ({ redirect: typeof s["redirect"] === "string" ? s["redirect"] : undefined }),
   head: () => ({
     meta: [
       { title: "Sign in — Nourish.ly" },
@@ -50,12 +50,12 @@ function AuthPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     const parsed = schema.safeParse({ email, password, name });
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+    if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Invalid input"); return; }
     setBusy(true);
     if (mode === "signin") {
       const { error } = await supabase.auth.signInWithPassword({ email: parsed.data.email, password });
       setBusy(false);
-      if (error) return toast.error(error.message);
+      if (error) { toast.error(error.message); return; }
       navigate({ href: safePath(redirect), replace: true });
     } else {
       const { data, error } = await supabase.auth.signUp({
@@ -63,7 +63,7 @@ function AuthPage() {
         options: { emailRedirectTo: window.location.origin + "/stores", data: { display_name: parsed.data.name, requested_role: role } },
       });
       setBusy(false);
-      if (error) return toast.error(error.message);
+      if (error) { toast.error(error.message); return; }
       if (data.session) navigate({ href: "/stores", replace: true });
       else toast.success("Check your email to confirm your account.");
     }

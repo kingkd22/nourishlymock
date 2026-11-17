@@ -32,7 +32,7 @@ function StoresPage() {
 
   const list = useMemo(() => {
     const all = (stores.data ?? []) as unknown as Store[];
-    return filterStores(all, { query, modes, accessibility: access, dietary, cuisine: cuisine || undefined, vendorTypes: types, budgetOnly: budget });
+    return filterStores(all, { query, modes, accessibility: access, dietary, ...(cuisine ? { cuisine } : {}), vendorTypes: types, budgetOnly: budget });
   }, [stores.data, query, modes, access, dietary, cuisine, types, budget]);
 
   return (
@@ -80,7 +80,7 @@ function StoresPage() {
                       <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{full.hours}</span>
                     </div>
                   </div>
-                  <div className="text-right"><Stars value={avg} /><p className="text-xs text-muted-foreground">{avg ?? "No"} rating</p></div>
+                  <div className="text-right"><Stars value={avg} /><p className="text-xs text-muted-foreground">{avg == null ? "No reviews" : `${avg} average`}</p></div>
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-2">
                   {(["walking", "bus", "shuttle"] as TransitMode[]).map((m) => {

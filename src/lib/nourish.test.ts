@@ -45,18 +45,18 @@ describe("price comparison across grocery and farmers' markets (R2, R8)", () => 
   it("sorts cheapest first and includes farmers' market stands", () => {
     const rows = compareItem("Eggs", products, stores, NOW);
     expect(rows.map((r) => r.store.id)).toEqual(["g", "f", "i"]);
-    expect(rows[0].isCheapest).toBe(true);
-    expect(rows[0].onPromo).toBe(true);
+    expect(rows[0]!.isCheapest).toBe(true);
+    expect(rows[0]!.onPromo).toBe(true);
     expect(rows.some((r) => r.store.vendor_type === "farmers_market")).toBe(true);
   });
   it("computes savings against the most expensive option", () => {
     const rows = compareItem("Eggs", products, stores, NOW);
-    expect(rows[0].savingsVsHighest).toBe(1.51);
-    expect(rows[2].savingsVsHighest).toBe(0);
+    expect(rows[0]!.savingsVsHighest).toBe(1.51);
+    expect(rows[2]!.savingsVsHighest).toBe(0);
   });
   it("reflects an updated price immediately", () => {
     const updated = products.map((p) => (p.id === "b" ? { ...p, current_price: 2.99 } : p));
-    expect(compareItem("Eggs", updated, stores, NOW)[0].store.id).toBe("f");
+    expect(compareItem("Eggs", updated, stores, NOW)[0]!.store.id).toBe("f");
   });
   it("only lists items sold at 2+ stores as comparable", () => {
     expect(comparableItems(products)).toEqual(["Eggs"]);
@@ -102,8 +102,8 @@ describe("basket ranking with price + transit", () => {
   it("ranks by items found, then basket cost", () => {
     const r = rankStoresForBasket(["eggs", "rice"], stores, products, ["walking", "bus", "shuttle"], NOW);
     expect(r.map((x) => x.store.id)).toEqual(["i", "g", "f"]);
-    expect(r[0].basketCost).toBe(7);
-    expect(r[2].itemsMissing).toEqual(["rice"]);
+    expect(r[0]!.basketCost).toBe(7);
+    expect(r[2]!.itemsMissing).toEqual(["rice"]);
   });
   it("excludes stores the student cannot reach", () => {
     const r = rankStoresForBasket(["eggs", "rice"], stores, products, ["walking"], NOW);
@@ -156,7 +156,7 @@ describe("recipe filters (R12, R19)", () => {
     expect(filterRecipes(recipes, { maxCost: 6 }).map((x) => x.id)).toEqual(["curry", "tofu"]);
   });
   it("maps a recipe to stores carrying its cuisine and compliance", () => {
-    expect(storesForRecipe(recipes[0], stores).map((s) => s.id)).toEqual(["i"]);
+    expect(storesForRecipe(recipes[0]!, stores).map((s) => s.id)).toEqual(["i"]);
   });
 });
 

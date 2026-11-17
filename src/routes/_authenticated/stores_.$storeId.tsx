@@ -14,7 +14,7 @@ import { averageRating, effectivePrice, formatPrice, isPromoActive, travelMinute
 import { ACCESS_LABELS, RELIGIOUS_LABELS, TRANSIT_LABELS, VENDOR_LABELS } from "@/lib/labels";
 import { useSession } from "@/hooks/use-session";
 
-export const Route = createFileRoute("/_authenticated/stores/$storeId")({
+export const Route = createFileRoute("/_authenticated/stores_/$storeId")({
   head: () => ({ meta: [{ title: "Store details — Nourish.ly" }, { name: "description", content: "Prices, sourcing, hours and reviews." }, { property: "og:title", content: "Store details — Nourish.ly" }, { property: "og:description", content: "Prices, sourcing, hours and reviews." }] }),
   component: StorePage,
 });
@@ -40,9 +40,9 @@ function StorePage() {
   const name = (id: string) => profiles.data?.find((p) => p.id === id)?.display_name ?? "Student";
 
   async function submitReview() {
-    if (rating < 1) return toast.error("Pick a star rating.");
+    if (rating < 1) { toast.error("Pick a star rating."); return; }
     const { error } = await supabase.from("store_reviews").insert({ store_id: storeId, user_id: session!.user!.id, rating, body: body.trim().slice(0, 1000), product_id: productId || null });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Review posted");
     setRating(0); setBody(""); setProductId("");
     qc.invalidateQueries({ queryKey: ["reviews"] });

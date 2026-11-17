@@ -13,7 +13,7 @@ import { averageRating, formatPrice, storesForRecipe, type Store } from "@/lib/n
 import { ALLERGEN_LABELS, DIETARY_LABELS, RELIGIOUS_LABELS } from "@/lib/labels";
 import { useSession } from "@/hooks/use-session";
 
-export const Route = createFileRoute("/_authenticated/recipes/$recipeId")({
+export const Route = createFileRoute("/_authenticated/recipes_/$recipeId")({
   head: () => ({ meta: [{ title: "Recipe — Nourish.ly" }, { name: "description", content: "Ingredients, steps, tags and where to shop." }, { property: "og:title", content: "Recipe — Nourish.ly" }, { property: "og:description", content: "Ingredients, steps, tags and where to shop." }] }),
   component: RecipePage,
 });
@@ -35,9 +35,9 @@ function RecipePage() {
   const where = storesForRecipe(r, (stores.data ?? []) as unknown as Store[]);
 
   async function submit() {
-    if (rating < 1) return toast.error("Pick a star rating.");
+    if (rating < 1) { toast.error("Pick a star rating."); return; }
     const { error } = await supabase.from("recipe_feedback").insert({ recipe_id: recipeId, user_id: session!.user!.id, rating, body: body.trim().slice(0, 1000) });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Thanks for the feedback");
     setRating(0); setBody("");
     qc.invalidateQueries({ queryKey: ["feedback", recipeId] });

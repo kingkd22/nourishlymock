@@ -3,20 +3,22 @@
  * They verify access rules (who can do what) and the database-side business rules.
  * Every test restores any data it changes.
  */
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Database } from "@/integrations/supabase/types";
 import { compareItem, type Product, type Store } from "@/lib/nourish";
 
-const URL = import.meta.env.VITE_SUPABASE_URL as string;
-const KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+const URL = import.meta.env["VITE_SUPABASE_URL"] as string;
+const KEY = import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] as string;
 const PASSWORD = "Nourish!2026";
 const FARM = "11111111-0000-0000-0000-000000000004";
 const VALUEMART = "11111111-0000-0000-0000-000000000002";
 const PANTRY = "22222222-0000-0000-0000-000000000001";
 
-async function as(who: string): Promise<SupabaseClient<Database>> {
-  const c = createClient<Database>(URL, KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+const make = () => createClient<Database>(URL, KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+type Client = ReturnType<typeof make>;
+async function as(who: string): Promise<Client> {
+  const c = make();
   const { error } = await c.auth.signInWithPassword({ email: `demo.${who}@nourishly.app`, password: PASSWORD });
   if (error) throw error;
   return c;
@@ -25,14 +27,12 @@ async function as(who: string): Promise<SupabaseClient<Database>> {
 const run = URL && KEY ? describe : describe.skip;
 
 run("backend integration", () => {
-  let student: SupabaseClient<Database>, student2: SupabaseClient<Database>, vendor: SupabaseClient<Database>,
-    chef: SupabaseClient<Database>, pantry: SupabaseClient<Database>, mod: SupabaseClient<Database>;
-  const cleanup: (() => Promise<unknown>)[] = [];
+  let student: Client, student2: Client, vendor: Client, chef: Client, pantry: Client, mod: Client;
+  const cleanup: (() => PromiseLike<unknown>)[] = [];
 
   beforeAll(async () => {
-    [student, student2, vendor, chef, pantry, mod] = await Promise.all(
-      ["student", "student2", "vendor", "chef", "pantry_staff", "moderator"].map(as),
-    );
+    student = await as("student"); student2 = await as("student2"); vendor = await as("vendor");
+    chef = await as("chef"); pantry = await as("pantry_staff"); mod = await as("moderator");
   }, 30000);
   afterAll(async () => {
     for (const fn of cleanup.reverse()) await fn();
@@ -71,8 +71,8 @@ run("backend integration", () => {
       student.from("products").select("*"), student.from("stores").select("*"),
     ]);
     const rows = compareItem("Eggs", products as unknown as Product[], stores as unknown as Store[]);
-    expect(rows[0].store.id).toBe(FARM);
-    expect(rows[0].price).toBe(1.99);
+    expect(rows[0]!.store.id).toBe(FARM);
+    expect(rows[0]!.price).toBe(1.99);
   });
 
   it("database rejects a promo price that isn't lower than the regular price", async () => {

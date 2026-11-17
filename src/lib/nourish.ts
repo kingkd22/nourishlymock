@@ -107,7 +107,7 @@ export function compareItem(
     .sort((a, b) => a.price - b.price || a.store.distance_miles - b.store.distance_miles);
   if (rows.length === 0) return [];
   const highest = Math.max(...rows.map((r) => r.price));
-  const lowest = rows[0].price;
+  const lowest = rows[0]!.price;
   return rows.map((r) => ({
     ...r,
     savingsVsHighest: round2(highest - r.price),

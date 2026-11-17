@@ -50,9 +50,9 @@ function Prices({ storeId }: { storeId: string }) {
   async function add() {
     const price = Number(n.price);
     const err = n.name.trim().length < 2 ? "Enter a product name." : validatePriceUpdate(price, null);
-    if (err) return toast.error(err);
+    if (err) { toast.error(err); return; }
     const { error } = await supabase.from("products").insert({ store_id: storeId, name: n.name.trim(), unit: n.unit, category: n.category, current_price: price });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Product added"); setN({ name: "", unit: "each", category: "produce", price: "" });
     qc.invalidateQueries({ queryKey: ["products"] });
   }
@@ -76,9 +76,9 @@ function ProductRow({ p }: { p: { id: string; name: string; unit: string; curren
     const price = Number(f.price);
     const promo = f.promo === "" ? null : Number(f.promo);
     const err = validatePriceUpdate(price, promo);
-    if (err) return toast.error(err);
+    if (err) { toast.error(err); return; }
     const { error } = await supabase.from("products").update({ current_price: price, promo_price: promo, promo_label: promo == null ? null : f.label || "Promo", promo_ends_at: promo == null || !f.ends ? null : new Date(f.ends + "T23:59:59").toISOString(), origin: f.origin.slice(0, 120), producer: f.producer.slice(0, 120) }).eq("id", p.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(`${p.name} updated — comparisons are live`);
     qc.invalidateQueries({ queryKey: ["products"] });
   }
@@ -104,9 +104,9 @@ function News({ storeId }: { storeId: string }) {
   const qc = useQueryClient();
   const [title, setTitle] = useState(""); const [body, setBody] = useState("");
   async function post() {
-    if (title.trim().length < 2) return toast.error("Add a title.");
+    if (title.trim().length < 2) { toast.error("Add a title."); return; }
     const { error } = await supabase.from("announcements").insert({ store_id: storeId, title: title.trim().slice(0, 120), body: body.trim().slice(0, 1000) });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Broadcast sent to students"); setTitle(""); setBody("");
     qc.invalidateQueries({ queryKey: ["announcements"] });
   }
@@ -131,7 +131,7 @@ function ReviewRow({ r, who }: { r: { id: string; rating: number; body: string; 
   const [text, setText] = useState(r.owner_response ?? "");
   async function respond() {
     const { error } = await supabase.rpc("respond_to_review", { _review_id: r.id, _response: text });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Public response posted"); qc.invalidateQueries({ queryKey: ["reviews"] });
   }
   return (
