@@ -491,6 +491,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_display_names: {
+        Args: { _ids: string[] }
+        Returns: {
+          display_name: string
+          id: string
+        }[]
+      }
+      has_any_app_role: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

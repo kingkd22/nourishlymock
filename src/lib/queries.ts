@@ -24,4 +24,20 @@ export const pantryQuery = queryOptions({
   },
 });
 export const reportsQuery = queryOptions({ queryKey: ["reports"], queryFn: async () => must(await supabase.from("flagged_reports").select("*").order("created_at", { ascending: false })) });
-export const profilesQuery = queryOptions({ queryKey: ["profiles"], queryFn: async () => must(await supabase.from("profiles").select("id, display_name")) });
+// Profiles are private; display names of authors/reporters come from a narrow lookup function.
+export const profilesQuery = queryOptions({
+  queryKey: ["profiles"],
+  queryFn: async () => {
+    const [r, f, rep] = await Promise.all([
+      supabase.from("store_reviews").select("user_id"),
+      supabase.from("recipe_feedback").select("user_id"),
+      supabase.from("flagged_reports").select("reporter_id, target_author_id"),
+    ]);
+    const ids = new Set<string>();
+    (r.data ?? []).forEach((x) => ids.add(x.user_id));
+    (f.data ?? []).forEach((x) => ids.add(x.user_id));
+    (rep.data ?? []).forEach((x) => { ids.add(x.reporter_id); if (x.target_author_id) ids.add(x.target_author_id); });
+    if (ids.size === 0) return [];
+    return must(await supabase.rpc("get_display_names", { _ids: [...ids] }));
+  },
+});

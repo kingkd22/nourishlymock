@@ -8,6 +8,13 @@
       "when": 1794335106927,
       "tag": "0000_nourishly_core_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795109590924,
+      "tag": "0001_tighten_pantry_profile_reads",
+      "breakpoints": true
     }
   ]
 }
